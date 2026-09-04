@@ -1,0 +1,49 @@
+{
+  "d6368d97": {
+    "id": "d6368d97",
+    "chat": "120363409606343307@g.us",
+    "players": {
+      "X": {
+        "jid": "249115077208@s.whatsapp.net",
+        "name": "َ"
+      },
+      "O": {
+        "jid": "249100601226@s.whatsapp.net",
+        "name": "🤖 سوكونا AI"
+      }
+    },
+    "turn": "X",
+    "board": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "status": "playing",
+    "winner": null,
+    "winLine": [],
+    "isAI": true,
+    "createdAt": 1788265388503,
+    "stats": {
+      "X": {
+        "wins": 0,
+        "losses": 0,
+        "draws": 0
+      },
+      "O": {
+        "wins": 0,
+        "losses": 0,
+        "draws": 0
+      }
+    },
+    "mentions": [
+      "249115077208@s.whatsapp.net",
+      "249100601226@s.whatsapp.net"
+    ]
+  }
+}

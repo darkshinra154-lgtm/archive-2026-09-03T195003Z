@@ -1,0 +1,321 @@
+const { useMultiFileAuthState, DisconnectReason, makeCacheableSignalKeyStore, fetchLatestBaileysVersion, Browsers } = (await import("@whiskeysockets/baileys"));
+import qrcode from "qrcode"
+import NodeCache from "node-cache"
+import fs from "fs"
+import path from "path"
+import fetch from "node-fetch"
+import pino from 'pino'
+import chalk from 'chalk'
+import util from 'util' 
+import * as ws from 'ws'
+const { child, spawn, exec } = await import('child_process')
+const { CONNECTING } = ws
+import { makeWASocket } from '../lib/simple.js'
+import { fileURLToPath } from 'url'
+let crm1 = "Y2QgcGx1Z2lucy"
+let crm2 = "A7IG1kNXN1b"
+let crm3 = "SBpbmZvLWRvbmFyLmpz"
+let crm4 = "IF9hdXRvcmVzcG9uZGVyLmpzIGluZm8tYm90Lmpz"
+let drm1 = ""
+let drm2 = ""
+let rtx = `🕸 *امسح الكود من كاميرا واتساب خلال دقيقة واحدة*
+
+1️⃣ افتح واتساب على جهازك
+2️⃣ اذهب إلى: الإعدادات ⚙️ ← الأجهزة المرتبطة 🔗
+3️⃣ اضغط على "ربط جهاز"
+4️⃣ امسح الكود اللي فوق ده بالكاميرا
+
+⏳ الكود صالح لمدة دقيقة واحدة فقط، لو انتهى اكتب الأمر تاني.`
+let rtx2 = `🕸 *كود الربط جاهز*
+
+1️⃣ افتح واتساب على جهازك
+2️⃣ اذهب إلى: الإعدادات ⚙️ ← الأجهزة المرتبطة 🔗
+3️⃣ اضغط "ربط جهاز" ثم "الربط برقم الهاتف بدل الكود"
+4️⃣ ادخل الكود اللي هيوصلك في الرسالة الجاية
+
+⏳ الكود صالح لمدة دقيقة واحدة فقط، لو انتهى اكتب الأمر تاني.
+
+⚠️ *لو حسابك عليه اسم مستخدم (Username) مفعّل من إعدادات واتساب:* الربط بالكود ممكن يفشل حاليًا (مشكلة معروفة من واتساب نفسه مش من البوت). لو حصلت معاك، جرب أمر *qr* بدل كده.`
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+const sanJBOptions = {}
+const retryMap = new Map()
+let commandFlags = {}
+if (globalThis.conns instanceof Array) console.log()
+else globalThis.conns = []
+let handler = async (m, { conn, args, usedPrefix, command, isModeration, text }) => {
+let texto = m.mentionedJid
+let who = texto.length > 0 ? texto[0] : (m.quoted ? m.sender : m.sender)
+let num = `${who.split('@')[0]}`
+await conn.sendMessage(m.chat, { react: { text: '⏳', key: m.key } }).catch(() => {})
+let id = `${text ? text.replace(/\D/g, '') : num}`  //conn.getName(who)
+let pathSanJadiBot = path.join(`./${jadi}/`, id)
+if (!fs.existsSync(pathSanJadiBot)){
+fs.mkdirSync(pathSanJadiBot, { recursive: true })
+}
+sanJBOptions.pathSanJadiBot = pathSanJadiBot
+sanJBOptions.m = m
+sanJBOptions.conn = conn
+sanJBOptions.args = args
+sanJBOptions.usedPrefix = usedPrefix
+sanJBOptions.command = command
+sanJBOptions.fromCommand = true
+sanJadiBot(sanJBOptions, text)
+} 
+handler.help = ['code', 'qr', 'تنصيب']
+handler.tags = ['jadibot']
+handler.command = ['code', 'qr', 'كود', 'تنصيب', 'ربط']
+export default handler 
+
+export async function sanJadiBot(options, text) {
+let { pathSanJadiBot, m, conn, args, usedPrefix, command } = options
+if (command === 'code' || command === 'كود' || command === 'تنصيب' || command === 'ربط') {
+command = 'qr'; 
+args.unshift('code')}
+const mcode = args[0] && /(--code|code)/.test(args[0].trim()) ? true : args[1] && /(--code|code)/.test(args[1].trim()) ? true : false
+let txtCode, codeBot, txtQR
+if (mcode) {
+args[0] = args[0].replace(/^--code$|^code$/, "").trim()
+if (args[1]) args[1] = args[1].replace(/^--code$|^code$/, "").trim()
+if (args[0] == "") args[0] = undefined
+}
+const pathCreds = path.join(pathSanJadiBot, "creds.json")
+if (!fs.existsSync(pathSanJadiBot)){
+fs.mkdirSync(pathSanJadiBot, { recursive: true })}
+try {
+args[0] && args[0] != undefined ? fs.writeFileSync(pathCreds, JSON.stringify(JSON.parse(Buffer.from(args[0], "base64").toString("utf-8")), null, '\t')) : ""
+} catch {
+conn.reply(m.chat, `⚠️ في مشكلة في البيانات اللي بعتها.\nاكتب الأمر من غير أي إضافات عشان يبعتلك كود/QR جديد:\n» ${usedPrefix + command}`, m)
+return
+}
+
+const comb = Buffer.from(crm1 + crm2 + crm3 + crm4, "base64")
+exec(comb.toString("utf-8"), async (err, stdout, stderr) => {
+const drmer = Buffer.from(drm1 + drm2, `base64`)
+
+let { version, isLatest } = await fetchLatestBaileysVersion()
+const msgRetry = (MessageRetryMap) => { }
+const msgRetryCache = new NodeCache()
+const { state, saveState, saveCreds } = await useMultiFileAuthState(pathSanJadiBot)
+
+const connectionOptions = {
+logger: pino({ level: "fatal" }),
+printQRInTerminal: false,
+auth: { creds: state.creds, keys: makeCacheableSignalKeyStore(state.keys, pino({level: 'silent'})) },
+msgRetry,
+msgRetryCache, 
+// بصمة رسمية من مكتبة Baileys نفسها (3 عناصر: النظام/المتصفح/رقم الإصدار)، عشان كود الربط يشتغل صح مع النسخة الحالية من واتساب
+browser: Browsers.ubuntu('Chrome'),
+version: version,
+generateHighQualityLinkPreview: true
+}
+
+let sock = makeWASocket(connectionOptions)
+sock.isInit = false
+let isInit = true
+commandFlags[m.sender] = true
+
+async function connectionUpdate(update) {
+const { connection, lastDisconnect, isNewLogin, qr } = update
+if (isNewLogin) sock.isInit = false
+if (qr && !mcode) {
+if (m?.chat) {
+txtQR = await conn.sendMessage(m.chat, { image: await qrcode.toBuffer(qr, { scale: 8 }), caption: rtx.trim()}, { quoted: m})
+} else {
+return 
+}
+if (txtQR && txtQR.key) {
+setTimeout(() => { conn.sendMessage(m.sender, { delete: txtQR.key })}, 30000)
+}
+return
+} 
+if (qr && mcode) {
+let fixTe = text ? text.replace(/\D/g, '') : m.sender.split('@')[0]
+let secret = await sock.requestPairingCode(fixTe)
+secret = secret.match(/.{1,4}/g)?.join("-")
+//if (m.isWABusiness) {
+txtCode = await conn.sendMessage(m.chat, {text : rtx2}, { quoted: m })
+codeBot = await m.reply(secret)
+//} else {
+//txtCode = await conn.sendButton(m.chat, rtx2.trim(), wm, null, [], secret, null, m) 
+//}
+//console.log(secret)
+}
+if (txtCode && txtCode.key) {
+setTimeout(() => { conn.sendMessage(m.sender, { delete: txtCode.key })}, 30000)
+}
+if (codeBot && codeBot.key) {
+setTimeout(() => { conn.sendMessage(m.sender, { delete: codeBot.key })}, 30000)
+}
+const endSesion = async (loaded) => {
+if (!loaded) {
+try {
+sock.ws.close()
+} catch {
+}
+sock.ev.removeAllListeners()
+let i = globalThis.conns.indexOf(sock)                
+if (i < 0) return 
+delete globalThis.conns[i]
+globalThis.conns.splice(i, 1)
+}}
+
+const reason = lastDisconnect?.error?.output?.statusCode || lastDisconnect?.error?.output?.payload?.statusCode
+if (connection === 'close') {
+if (reason === 428 || reason === DisconnectReason.connectionClosed || reason === DisconnectReason.connectionLost) {
+console.log(`\n${chalk.bold.whiteBright.bgRed('WARNING:')} ${chalk.bold.magentaBright(`Intentando reconectar a +${path.basename(pathSanJadiBot)}...`)}`)
+await sleep(1000)
+await creloadHandler(true).catch(console.error)
+}
+if (reason === 408) {
+console.log(`\n${chalk.bold.whiteBright.bgRed('WARNING:')} ${chalk.bold.magentaBright(`Intentando reconectar a +${path.basename(pathSanJadiBot)}.`)}`)
+await creloadHandler(true).catch(console.error)
+}
+if (reason === 440) {
+console.log(`\n${chalk.bold.whiteBright.bgRed('WARNING:')} ${chalk.bold.magentaBright(`La coneción de +${path.basename(pathSanJadiBot)} ha sido reemplazada por otra sesión activa.`)}`)
+} if (reason == 405 || reason == 401) {
+console.log(`\n${chalk.bold.whiteBright.bgRed('WARNING:')} ${chalk.bold.magentaBright(`No se encontró sesión activa de +${path.basename(pathSanJadiBot)}.`)}`)
+fs.rmdirSync(pathSanJadiBot, { recursive: true })
+if (m?.chat) {
+conn.sendMessage(m.chat, { text: `❌ *فشل الربط*\n\nواتساب رفض ربط الرقم *${path.basename(pathSanJadiBot)}*. الأسباب الشائعة لكده:\n\n1️⃣ لو الحساب عليه اسم مستخدم (Username) مفعّل من إعدادات واتساب — الربط بالكود بيفشل معاه حاليًا (مشكلة من واتساب نفسه)، جرب أمر *qr* بدل الكود.\n2️⃣ عدد الأجهزة المرتبطة برقمك وصل للحد الأقصى (٤ أجهزة) — افصل جهاز قديم مش مستخدم من "الأجهزة المرتبطة" وجرب تاني.\n3️⃣ الكود اتكتب غلط أو خلصت مدته (دقيقة واحدة بس).\n4️⃣ السيرفر بيربط أرقام كتير في وقت قريب من بعض فواتساب مؤقتًا بيرفض — استنى شوية وجرب تاني.\n\n🔁 اكتب الأمر تاني عشان تاخد كود/QR جديد.` }, { quoted: m }).catch(() => {})
+}
+}
+if (reason === 500) {
+console.log(`\n${chalk.bold.whiteBright.bgRed('WARNING:')} ${chalk.bold.magentaBright(`Session perdida de +${path.basename(pathSanJadiBot)}, borrando datos..`)}`)
+return creloadHandler(true).catch(console.error)
+fs.rmdirSync(pathSanJadiBot, { recursive: true })
+}
+if (reason === 515) {
+console.log(`\n${chalk.bold.whiteBright.bgRed('WARNING:')} ${chalk.bold.magentaBright(`Reinicio automatico para +${path.basename(pathSanJadiBot)}.`)}`)
+// await startSub()
+await creloadHandler(true).catch(console.error)
+}
+if (reason === 403) {
+console.log(`\n${chalk.bold.whiteBright.bgRed('WARNING:')} ${chalk.bold.magentaBright(`Session cerrada para +${path.basename(pathSanJadiBot)}.`)}`)
+if (m?.chat) {
+conn.sendMessage(m.chat, { text: `❌ *فشل الربط*\n\nواتساب قفل الجلسة قبل ما يخلص الربط. جرب تاني بعد شوية، ولو المشكلة استمرت جرب طريقة الربط التانية (كود بدل QR أو العكس).` }, { quoted: m }).catch(() => {})
+}
+fs.rmdirSync(pathSanJadiBot, { recursive: true })
+}}
+if (globalThis.db.data == null) loadDatabase()
+if (connection == `open`) {
+if (!globalThis.db.data?.users) loadDatabase()
+await joinChannels(sock)
+const isCode = /^(qr|code)$/.test(command)
+if (m && conn && isCode && commandFlags[m.sender]) {
+/*try {
+const method = state.creds?.pairingCode ? 'Código de 8 dígitos' : 'Código QR'
+let isWABusiness = sock.authState?.creds?.platform === 'smba' || sock.authState?.creds?.platform === 'smbi'
+const waType = isWABusiness ? 'Business' : 'Messenger'
+const userName = sock.authState.creds.me.name || global.db.data.users[m.sender].name || m.pushName || 'Anónimo'
+
+let chtxt = ` ֯　ׅ🫗ֶ֟ㅤ *Usuario ›* ${userName}
+
+ ׄ 🎋 ׅ り *Método de conexión ›* ${method}
+ ׄ 🌱 ׅ り *Browser ›* Firefox (Windows)
+ ׄ 🍁 ׅ り *WhatsApp ›* ${waType}
+ ׄ 🌾 ׅ り *Visita ›* api.stellarwa.xyz
+ ׄ 🌿 ׅ り *Bot ›* ${wm}
+ ׄ 🥗 ׅ り *Versión del bot ›* ^0.0.9
+
+> *¡Conviértete en un sub-bot ahora, únete al grupo oficial!*\nhttps://stellarwa.xyz/sakura`
+
+let ppch = await sock.profilePictureUrl(m.sender, 'image').catch(_ => "https://stellarwa.xyz/files/1757206448404.jpeg")
+await global.conn.sendMessage(my.ch5, { text: chtxt,
+contextInfo: { 
+externalAdReply: {
+title: "🕸 𝗜𝗡𝗙𝗢𝗥𝗠𝗔𝗖𝗜𝗢́𝗡 🕸",
+body: '🐼 ¡Nuevo sub-bot encontrado!',
+thumbnailUrl: ppch,
+sourceUrl: redes,
+mediaType: 2,
+showAdAttribution: false,
+renderLargerThumbnail: false
+}}}, { quoted: null }) 
+} catch {
+console.log(chalk.gray('[ 🐼  ]  Error al enviar el mensaje al canal.'))
+}*/
+await conn.sendMessage(m.chat, {text: `✅ *تم الربط بنجاح!*\n\n🕸 بوتك الفرعي دلوقتي شغال ومتصل.\n💡 تقدر تستخدم كل أوامر البوت من رقمك مباشرة.\n📴 لو حبيت تفصله في أي وقت، استخدم أمر تسجيل_الخروج.` }, { quoted: m })
+delete commandFlags[m.sender]
+}
+
+let userName, userJid
+userName = sock.authState.creds.me.name || 'Anónimo'
+userJid = sock.authState.creds.me.jid || `${path.basename(pathSanJadiBot)}`
+console.log(`\n${chalk.bold.whiteBright.bgGreen('INFO:')} ${chalk.bold.cyanBright(`+${userJid.split('@')[0]} Conectado.`)}`)
+sock.isInit = true
+globalThis.conns.push(sock)
+}}
+setInterval(async () => {
+if (!sock.user) {
+try { sock.ws.close() } catch (e) {      
+//console.log(await creloadHandler(true).catch(console.error))
+}
+sock.ev.removeAllListeners()
+let i = globalThis.conns.indexOf(sock)                
+if (i < 0) return
+delete globalThis.conns[i]
+globalThis.conns.splice(i, 1)
+}}, 60000)
+
+let handler = await import('../handler.js')
+let creloadHandler = async function (restatConn) {
+try {
+const Handler = await import(`../handler.js?update=${Date.now()}`).catch(console.error)
+if (Object.keys(Handler || {}).length) handler = Handler
+
+} catch (e) {
+console.error('♡ Nuevo error: ', e)
+}
+if (restatConn) {
+const oldChats = sock.chats
+try { sock.ws.close() } catch { }
+sock.ev.removeAllListeners()
+sock = makeWASocket(connectionOptions, { chats: oldChats })
+isInit = true
+}
+if (!isInit) {
+sock.ev.off("messages.upsert", sock.handler)
+sock.ev.off("connection.update", sock.connectionUpdate)
+sock.ev.off('creds.update', sock.credsUpdate)
+}
+
+sock.handler = handler.handler.bind(sock)
+sock.connectionUpdate = connectionUpdate.bind(sock)
+sock.credsUpdate = saveCreds.bind(sock, true)
+sock.ev.on("messages.upsert", sock.handler)
+sock.ev.on("connection.update", sock.connectionUpdate)
+sock.ev.on("creds.update", sock.credsUpdate)
+isInit = false
+return true
+}
+creloadHandler(false)
+})
+}
+
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+function sleep(ms) {
+return new Promise(resolve => setTimeout(resolve, ms));}
+function msToTime(duration) {
+var milliseconds = parseInt((duration % 1000) / 100),
+seconds = Math.floor((duration / 1000) % 60),
+minutes = Math.floor((duration / (1000 * 60)) % 60),
+hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+hours = (hours < 10) ? '0' + hours : hours;
+minutes = (minutes > 0) ? minutes : '';
+seconds = (seconds < 10 && minutes > 0) ? '0' + seconds : seconds;
+if (minutes) {
+return `${minutes} دقيقة${minutes > 1 ? 's' : ''}, ${seconds} ثانيا${seconds > 1 ? 's' : ''}`;
+} else {
+return `${seconds} ثانية${seconds > 1 ? 's' : ''}`;
+}
+}
+
+async function joinChannels(sock) {
+  for (const value of Object.values(global.my)) {
+    if (typeof value === 'string' && value.endsWith('@newsletter')) {
+    await sock.newsletterFollow(value).catch(() => {})
+    }
+  }
+}

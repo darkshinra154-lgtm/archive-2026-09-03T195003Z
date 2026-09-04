@@ -1,0 +1,130 @@
+[
+  {
+    "id": "1",
+    "name": "مصر",
+    "defense": 3250,
+    "reward": 600,
+    "owner": "ahmed dev",
+    "occupiedAt": "2026-08-29T12:25:31.867Z"
+  },
+  {
+    "id": "2",
+    "name": "السعودية",
+    "defense": 4000,
+    "reward": 1000,
+    "owner": "الجمهورية (خالية)",
+    "occupiedAt": null
+  },
+  {
+    "id": "3",
+    "name": "فلسطين",
+    "defense": 6000,
+    "reward": 1500,
+    "owner": "الجمهورية (خالية)",
+    "occupiedAt": null
+  },
+  {
+    "id": "4",
+    "name": "اليابان",
+    "defense": 5000,
+    "reward": 1200,
+    "owner": "الجمهورية (خالية)",
+    "occupiedAt": null
+  },
+  {
+    "id": "5",
+    "name": "ألمانيا",
+    "defense": 4500,
+    "reward": 1100,
+    "owner": "الجمهورية (خالية)",
+    "occupiedAt": null
+  },
+  {
+    "id": "6",
+    "name": "روسيا",
+    "defense": 7500,
+    "reward": 1800,
+    "owner": "الجمهورية (خالية)",
+    "occupiedAt": null
+  },
+  {
+    "id": "7",
+    "name": "أمريكا",
+    "defense": 9000,
+    "reward": 2200,
+    "owner": "الجمهورية (خالية)",
+    "occupiedAt": null
+  },
+  {
+    "id": "8",
+    "name": "الصين",
+    "defense": 8500,
+    "reward": 2000,
+    "owner": "الجمهورية (خالية)",
+    "occupiedAt": null
+  },
+  {
+    "id": "9",
+    "name": "أتلانتس المفقودة",
+    "defense": 15000,
+    "reward": 4500,
+    "owner": "الجمهورية (خالية)",
+    "occupiedAt": null
+  },
+  {
+    "id": "10",
+    "name": "مملكة شامبالا",
+    "defense": 22000,
+    "reward": 6500,
+    "owner": "الجمهورية (خالية)",
+    "occupiedAt": null
+  },
+  {
+    "id": "11",
+    "name": "أرض هايبربوريا",
+    "defense": 30000,
+    "reward": 9000,
+    "owner": "الجمهورية (خالية)",
+    "occupiedAt": null
+  },
+  {
+    "id": "12",
+    "name": "قلعة آرخام الشيطانية",
+    "defense": 42000,
+    "reward": 13000,
+    "owner": "الجمهورية (خالية)",
+    "occupiedAt": null
+  },
+  {
+    "id": "13",
+    "name": "عرش الفالاهالا",
+    "defense": 55000,
+    "reward": 18000,
+    "owner": "الجمهورية (خالية)",
+    "occupiedAt": null
+  },
+  {
+    "id": "14",
+    "name": "مدينة إليزيوم",
+    "defense": 70000,
+    "reward": 25000,
+    "owner": "الجمهورية (خالية)",
+    "occupiedAt": null
+  },
+  {
+    "id": "15",
+    "name": "معبد سوكونا المنكوب",
+    "defense": 90000,
+    "reward": 35000,
+    "owner": "الجمهورية (خالية)",
+    "occupiedAt": null
+  },
+  {
+    "id": "16",
+    "name": "إمبراطورية الظلال",
+    "defense": 120000,
+    "reward": 50000,
+    "owner": "الجمهورية (خالية)",
+    "occupiedAt": null
+  }
+]
